@@ -16,10 +16,10 @@ export default function UserCard({ user, role = "volunteer" }) {
 
       <View style={styles.infoContainer}>
         <View style={styles.nameRow}>
-          <Text style={styles.name}>{user.displayName || user.name || "User"}</Text>
+          <Text style={styles.name} numberOfLines={1}>{user.displayName || user.name || "User"}</Text>
           {user.verified && (
             <View style={styles.verifiedBadge}>
-              <Ionicons name="checkmark-circle" size={16} color={COLORS.success} />
+              <Ionicons name="checkmark-circle" size={14} color={COLORS.success} />
               <Text style={styles.verifiedText}>Verified</Text>
             </View>
           )}
@@ -56,16 +56,20 @@ const styles = StyleSheet.create({
     elevation: 2
   },
   avatarContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     backgroundColor: COLORS.primaryLight + "20",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12
   },
   avatarEmoji: {
-    fontSize: 26
+    fontSize: 26,
+    lineHeight: 34,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   infoContainer: {
     flex: 1
@@ -77,27 +81,35 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    flex: 1,
+    marginRight: 8,
+    includeFontPadding: false
   },
   verifiedBadge: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: COLORS.volunteer.badgeBg,
     paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingVertical: 3,
     borderRadius: 12
   },
   verifiedText: {
     fontSize: 11,
+    lineHeight: 14,
     fontWeight: "bold",
     color: COLORS.success,
-    marginLeft: 3
+    marginLeft: 3,
+    includeFontPadding: false
   },
   subtext: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   },
   statsRow: {
     flexDirection: "row",
@@ -105,12 +117,15 @@ const styles = StyleSheet.create({
   },
   statTag: {
     fontSize: 12,
+    lineHeight: 16,
     fontWeight: "600",
     color: COLORS.primary,
     backgroundColor: COLORS.elderly.badgeBg,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 10,
-    marginRight: 8
+    marginRight: 8,
+    includeFontPadding: false
   }
 });
+

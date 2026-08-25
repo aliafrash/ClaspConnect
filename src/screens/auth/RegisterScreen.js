@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import InputField from "../../components/InputField";
 import CustomButton from "../../components/CustomButton";
 import { COLORS } from "../../constants/colors";
@@ -38,93 +39,97 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>🤝 ClaspConnect</Text>
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Join our elderly support and micro-volunteering network</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={styles.logo}>🤝 ClaspConnect</Text>
+          <Text style={styles.title}>Create Account</Text>
+          <Text style={styles.subtitle}>Join our elderly support and micro-volunteering network</Text>
+        </View>
 
-      <Text style={styles.roleLabel}>I am registering as:</Text>
-      <View style={styles.roleGrid}>
-        {[
-          { id: "elderly", title: "Elderly User", icon: "👴" },
-          { id: "volunteer", title: "Volunteer", icon: "🙋‍♀️" },
-          { id: "caregiver", title: "Caregiver", icon: "👩‍💼" },
-          { id: "admin", title: "Administrator", icon: "🛡️" }
-        ].map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            style={[
-              styles.roleCard,
-              role === item.id && styles.roleCardActive
-            ]}
-            onPress={() => setRole(item.id)}
-          >
-            <Text style={styles.roleIcon}>{item.icon}</Text>
-            <Text
+        <Text style={styles.roleLabel}>I am registering as:</Text>
+        <View style={styles.roleGrid}>
+          {[
+            { id: "elderly", title: "Elderly User", icon: "👴" },
+            { id: "volunteer", title: "Volunteer", icon: "🙋‍♀️" },
+            { id: "caregiver", title: "Caregiver", icon: "👩‍💼" },
+            { id: "admin", title: "Administrator", icon: "🛡️" }
+          ].map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              activeOpacity={0.7}
               style={[
-                styles.roleCardTitle,
-                role === item.id && styles.roleCardTitleActive
+                styles.roleCard,
+                role === item.id && styles.roleCardActive
               ]}
+              onPress={() => setRole(item.id)}
             >
-              {item.title}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+              <Text style={styles.roleIcon}>{item.icon}</Text>
+              <Text
+                style={[
+                  styles.roleCardTitle,
+                  role === item.id && styles.roleCardTitleActive
+                ]}
+              >
+                {item.title}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
-      <InputField
-        label="Full Name"
-        value={name}
-        onChangeText={setName}
-        placeholder="e.g. Mr. Perera / Nimali / Thilini"
-        icon="person-outline"
-      />
+        <InputField
+          label="Full Name"
+          value={name}
+          onChangeText={setName}
+          placeholder="e.g. Mr. Perera / Nimali / Thilini"
+          icon="person-outline"
+        />
 
-      <InputField
-        label="Email Address"
-        value={email}
-        onChangeText={setEmail}
-        placeholder="e.g. user@claspconnect.lk"
-        icon="mail-outline"
-        keyboardType="email-address"
-      />
+        <InputField
+          label="Email Address"
+          value={email}
+          onChangeText={setEmail}
+          placeholder="e.g. user@claspconnect.lk"
+          icon="mail-outline"
+          keyboardType="email-address"
+        />
 
-      <InputField
-        label="Phone Number"
-        value={phone}
-        onChangeText={setPhone}
-        placeholder="e.g. +94 77 123 4567"
-        icon="call-outline"
-        keyboardType="phone-pad"
-      />
+        <InputField
+          label="Phone Number"
+          value={phone}
+          onChangeText={setPhone}
+          placeholder="e.g. +94 77 123 4567"
+          icon="call-outline"
+          keyboardType="phone-pad"
+        />
 
-      <InputField
-        label="Password"
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Choose secure password"
-        icon="lock-closed-outline"
-        secureTextEntry
-      />
+        <InputField
+          label="Password"
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Choose secure password"
+          icon="lock-closed-outline"
+          secureTextEntry
+        />
 
-      <CustomButton
-        title="Register & Continue"
-        onPress={handleRegister}
-        loading={loading}
-        style={{ marginTop: 10 }}
-      />
+        <CustomButton
+          title="Register & Continue"
+          onPress={handleRegister}
+          loading={loading}
+          style={{ marginTop: 10 }}
+        />
 
-      <TouchableOpacity
-        style={styles.loginLink}
-        onPress={() => navigation.navigate("Login")}
-      >
-        <Text style={styles.loginText}>
-          Already have an account? <Text style={styles.boldText}>Sign In</Text>
-        </Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.loginLink}
+          onPress={() => navigation.navigate("Login")}
+        >
+          <Text style={styles.loginText}>
+            Already have an account? <Text style={styles.boldText}>Sign In</Text>
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -135,7 +140,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 24,
-    paddingTop: 40,
+    paddingTop: 20,
     paddingBottom: 40
   },
   header: {
@@ -144,26 +149,34 @@ const styles = StyleSheet.create({
   },
   logo: {
     fontSize: 22,
+    lineHeight: 28,
     fontWeight: "bold",
     color: COLORS.primary,
-    marginBottom: 6
+    marginBottom: 6,
+    includeFontPadding: false
   },
   title: {
     fontSize: 28,
+    lineHeight: 34,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   subtitle: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.subtext,
     textAlign: "center",
-    marginTop: 4
+    marginTop: 4,
+    includeFontPadding: false
   },
   roleLabel: {
     fontSize: 14,
+    lineHeight: 18,
     fontWeight: "600",
     color: COLORS.text,
-    marginBottom: 10
+    marginBottom: 10,
+    includeFontPadding: false
   },
   roleGrid: {
     flexDirection: "row",
@@ -173,7 +186,7 @@ const styles = StyleSheet.create({
   },
   roleCard: {
     width: "48%",
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 8,
     borderRadius: 14,
     backgroundColor: COLORS.white,
@@ -187,13 +200,19 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.elderly.badgeBg
   },
   roleIcon: {
-    fontSize: 24,
-    marginBottom: 4
+    fontSize: 26,
+    lineHeight: 34,
+    textAlign: "center",
+    textAlignVertical: "center",
+    marginBottom: 4,
+    includeFontPadding: false
   },
   roleCardTitle: {
     fontSize: 13,
+    lineHeight: 18,
     fontWeight: "600",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   roleCardTitleActive: {
     color: COLORS.primary,
@@ -205,7 +224,9 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 14,
-    color: COLORS.subtext
+    lineHeight: 20,
+    color: COLORS.subtext,
+    includeFontPadding: false
   },
   boldText: {
     color: COLORS.primary,

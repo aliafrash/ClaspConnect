@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import InputField from "../../components/InputField";
 import CustomButton from "../../components/CustomButton";
 import { COLORS } from "../../constants/colors";
@@ -30,85 +31,90 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>🤝 ClaspConnect</Text>
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to access your companionship portal</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={styles.logo}>🤝 ClaspConnect</Text>
+          <Text style={styles.title}>Welcome Back</Text>
+          <Text style={styles.subtitle}>Sign in to access your companionship portal</Text>
+        </View>
 
-      <Text style={styles.roleLabel}>Select your account type for quick login:</Text>
-      <View style={styles.roleSelectorRow}>
-        {[
-          { id: "elderly", label: "Elderly" },
-          { id: "volunteer", label: "Volunteer" },
-          { id: "caregiver", label: "Caregiver" },
-          { id: "admin", label: "Admin" }
-        ].map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            style={[
-              styles.roleChip,
-              selectedRole === item.id && styles.roleChipActive
-            ]}
-            onPress={() => {
-              setSelectedRole(item.id);
-              setEmail(`${item.id}@claspconnect.lk`);
-            }}
-          >
-            <Text
+        <Text style={styles.roleLabel}>Select your account type for quick login:</Text>
+        <View style={styles.roleSelectorRow}>
+          {[
+            { id: "elderly", label: "Elderly" },
+            { id: "volunteer", label: "Volunteer" },
+            { id: "caregiver", label: "Caregiver" },
+            { id: "admin", label: "Admin" }
+          ].map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              activeOpacity={0.7}
               style={[
-                styles.roleChipText,
-                selectedRole === item.id && styles.roleChipTextActive
+                styles.roleChip,
+                selectedRole === item.id && styles.roleChipActive
               ]}
+              onPress={() => {
+                setSelectedRole(item.id);
+                setEmail(`${item.id}@claspconnect.lk`);
+              }}
             >
-              {item.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+              <Text
+                style={[
+                  styles.roleChipText,
+                  selectedRole === item.id && styles.roleChipTextActive
+                ]}
+              >
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
-      <InputField
-        label="Email Address"
-        value={email}
-        onChangeText={setEmail}
-        placeholder="e.g. perera@claspconnect.lk"
-        icon="mail-outline"
-        keyboardType="email-address"
-      />
+        <InputField
+          label="Email Address"
+          value={email}
+          onChangeText={setEmail}
+          placeholder="e.g. perera@claspconnect.lk"
+          icon="mail-outline"
+          keyboardType="email-address"
+        />
 
-      <InputField
-        label="Password"
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Enter password"
-        icon="lock-closed-outline"
-        secureTextEntry
-      />
+        <InputField
+          label="Password"
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Enter password"
+          icon="lock-closed-outline"
+          secureTextEntry
+        />
 
-      <CustomButton
-        title="Sign In"
-        onPress={handleLogin}
-        loading={loading}
-        style={{ marginTop: 10 }}
-      />
+        <CustomButton
+          title="Sign In"
+          onPress={handleLogin}
+          loading={loading}
+          style={{ marginTop: 10 }}
+        />
 
-      <TouchableOpacity
-        style={styles.registerLink}
-        onPress={() => navigation.navigate("Register")}
-      >
-        <Text style={styles.registerText}>
-          Don't have an account? <Text style={styles.boldText}>Register Here</Text>
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.registerLink}
+          onPress={() => navigation.navigate("Register")}
+        >
+          <Text style={styles.registerText}>
+            Don{"'"}t have an account? <Text style={styles.boldText}>Register Here</Text>
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.backRoleLink}
-        onPress={() => navigation.navigate("RoleSelection")}
-      >
-        <Text style={styles.backRoleText}>← Back to Persona Selector</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.backRoleLink}
+          onPress={() => navigation.navigate("RoleSelection")}
+        >
+          <Text style={styles.backRoleText}>← Back to Persona Selector</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -119,7 +125,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 24,
-    paddingTop: 50,
+    paddingTop: 20,
     paddingBottom: 40
   },
   header: {
@@ -128,26 +134,34 @@ const styles = StyleSheet.create({
   },
   logo: {
     fontSize: 22,
+    lineHeight: 28,
     fontWeight: "bold",
     color: COLORS.primary,
-    marginBottom: 8
+    marginBottom: 8,
+    includeFontPadding: false
   },
   title: {
     fontSize: 28,
+    lineHeight: 34,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   subtitle: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.subtext,
     textAlign: "center",
-    marginTop: 4
+    marginTop: 4,
+    includeFontPadding: false
   },
   roleLabel: {
     fontSize: 14,
+    lineHeight: 18,
     fontWeight: "600",
     color: COLORS.text,
-    marginBottom: 10
+    marginBottom: 10,
+    includeFontPadding: false
   },
   roleSelectorRow: {
     flexDirection: "row",
@@ -156,7 +170,7 @@ const styles = StyleSheet.create({
   },
   roleChip: {
     flex: 1,
-    paddingVertical: 8,
+    paddingVertical: 10,
     paddingHorizontal: 4,
     marginHorizontal: 3,
     borderRadius: 10,
@@ -171,8 +185,10 @@ const styles = StyleSheet.create({
   },
   roleChipText: {
     fontSize: 12,
+    lineHeight: 16,
     fontWeight: "600",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   roleChipTextActive: {
     color: COLORS.white
@@ -183,7 +199,9 @@ const styles = StyleSheet.create({
   },
   registerText: {
     fontSize: 14,
-    color: COLORS.subtext
+    lineHeight: 20,
+    color: COLORS.subtext,
+    includeFontPadding: false
   },
   boldText: {
     color: COLORS.primary,
@@ -195,7 +213,9 @@ const styles = StyleSheet.create({
   },
   backRoleText: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.primary,
-    fontWeight: "600"
+    fontWeight: "600",
+    includeFontPadding: false
   }
 });

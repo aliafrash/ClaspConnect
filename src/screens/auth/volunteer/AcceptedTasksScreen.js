@@ -8,14 +8,15 @@ import { fetchRequests, updateRequestStatus } from "../../../firebase/firestore"
 export default function AcceptedTasksScreen({ navigation }) {
   const [tasks, setTasks] = useState([]);
 
+  const loadData = () => {
+    fetchRequests({ volunteerId: "demo-user-volunteer" }).then((data) => {
+      setTasks(data);
+    });
+  };
+
   useEffect(() => {
     loadData();
   }, []);
-
-  const loadData = async () => {
-    const data = await fetchRequests({ volunteerId: "demo-user-volunteer" });
-    setTasks(data);
-  };
 
   const handleCheckIn = async (taskId) => {
     await updateRequestStatus(taskId, "In Progress");
@@ -64,6 +65,7 @@ export default function AcceptedTasksScreen({ navigation }) {
 
       <View style={styles.contactRow}>
         <TouchableOpacity
+          activeOpacity={0.7}
           style={styles.contactBtn}
           onPress={() => Alert.alert("Call User", `Dialing ${item.elderlyName}...`)}
         >
@@ -71,6 +73,7 @@ export default function AcceptedTasksScreen({ navigation }) {
         </TouchableOpacity>
 
         <TouchableOpacity
+          activeOpacity={0.7}
           style={[styles.contactBtn, { backgroundColor: COLORS.caregiver.primary }]}
           onPress={() => Alert.alert("Caregiver Contact", "Calling caregiver Thilini (+94 77 000 1122)...")}
         >
@@ -118,9 +121,10 @@ export default function AcceptedTasksScreen({ navigation }) {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={{ fontSize: 36 }}>📅</Text>
+            <Text style={styles.emptyEmoji}>📅</Text>
             <Text style={styles.emptyTitle}>No Commitments Yet</Text>
             <Text style={styles.emptySub}>Accept an opportunity from the browse screen to get started.</Text>
           </View>
@@ -155,15 +159,21 @@ const styles = StyleSheet.create({
   },
   elderName: {
     fontSize: 18,
+    lineHeight: 24,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    flex: 1,
+    marginRight: 6,
+    includeFontPadding: false
   },
   statusBadge: {
     fontSize: 12,
+    lineHeight: 16,
     fontWeight: "bold",
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 10
+    borderRadius: 10,
+    includeFontPadding: false
   },
   bgMatched: {
     backgroundColor: COLORS.volunteer.badgeBg,
@@ -179,14 +189,18 @@ const styles = StyleSheet.create({
   },
   activity: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
     color: COLORS.volunteer.primary,
-    marginBottom: 4
+    marginBottom: 4,
+    includeFontPadding: false
   },
   details: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    marginBottom: 12
+    marginBottom: 12,
+    includeFontPadding: false
   },
   contactRow: {
     flexDirection: "row",
@@ -196,14 +210,16 @@ const styles = StyleSheet.create({
   contactBtn: {
     width: "48%",
     backgroundColor: COLORS.volunteer.primary,
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderRadius: 10,
     alignItems: "center"
   },
   contactBtnText: {
     color: COLORS.white,
     fontWeight: "bold",
-    fontSize: 12
+    fontSize: 12,
+    lineHeight: 16,
+    includeFontPadding: false
   },
   completedBanner: {
     backgroundColor: COLORS.volunteer.badgeBg,
@@ -215,22 +231,35 @@ const styles = StyleSheet.create({
   completedText: {
     color: COLORS.volunteer.primary,
     fontWeight: "bold",
-    fontSize: 13
+    fontSize: 13,
+    lineHeight: 18,
+    includeFontPadding: false
   },
   emptyContainer: {
     alignItems: "center",
     marginTop: 50
   },
+  emptyEmoji: {
+    fontSize: 36,
+    lineHeight: 46,
+    textAlign: "center",
+    includeFontPadding: false
+  },
   emptyTitle: {
     fontSize: 18,
+    lineHeight: 24,
     fontWeight: "bold",
     color: COLORS.text,
-    marginTop: 8
+    marginTop: 8,
+    includeFontPadding: false
   },
   emptySub: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
     marginTop: 4,
-    textAlign: "center"
+    textAlign: "center",
+    includeFontPadding: false
   }
 });
+

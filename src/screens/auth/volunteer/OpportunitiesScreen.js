@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, FlatList, Alert } from "react-native";
 import Header from "../../../components/Header";
 import CustomButton from "../../../components/CustomButton";
 import { COLORS } from "../../../constants/colors";
@@ -7,16 +7,16 @@ import { fetchRequests, acceptOpportunity } from "../../../firebase/firestore";
 
 export default function OpportunitiesScreen({ navigation }) {
   const [opportunities, setOpportunities] = useState([]);
-  const [selectedFilter, setSelectedFilter] = useState("All");
+
+  const loadOpportunities = () => {
+    fetchRequests({ status: "Pending" }).then((data) => {
+      setOpportunities(data);
+    });
+  };
 
   useEffect(() => {
     loadOpportunities();
   }, []);
-
-  const loadOpportunities = async () => {
-    const data = await fetchRequests({ status: "Pending" });
-    setOpportunities(data);
-  };
 
   const handleAccept = async (item) => {
     Alert.alert(
@@ -41,8 +41,10 @@ export default function OpportunitiesScreen({ navigation }) {
     <View style={styles.card}>
       <View style={styles.headerRow}>
         <View style={styles.elderInfo}>
-          <Text style={styles.avatar}>👴</Text>
-          <View>
+          <View style={styles.avatarBadge}>
+            <Text style={styles.avatar}>👴</Text>
+          </View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.elderName}>{item.elderlyName}</Text>
             <Text style={styles.elderAge}>Age {item.elderlyAge || 72} • 📍 {item.location}</Text>
           </View>
@@ -83,9 +85,10 @@ export default function OpportunitiesScreen({ navigation }) {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={{ fontSize: 40 }}>🎉</Text>
+            <Text style={styles.emptyEmoji}>🎉</Text>
             <Text style={styles.emptyTitle}>All Caught Up!</Text>
             <Text style={styles.emptySub}>
               There are no pending requests available at the moment.
@@ -122,20 +125,37 @@ const styles = StyleSheet.create({
   },
   elderInfo: {
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    flex: 1
+  },
+  avatarBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: COLORS.elderly.badgeBg,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10
   },
   avatar: {
-    fontSize: 32,
-    marginRight: 10
+    fontSize: 28,
+    lineHeight: 36,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   elderName: {
     fontSize: 17,
+    lineHeight: 22,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   elderAge: {
     fontSize: 13,
-    color: COLORS.subtext
+    lineHeight: 18,
+    color: COLORS.subtext,
+    includeFontPadding: false
   },
   badge: {
     backgroundColor: COLORS.volunteer.badgeBg,
@@ -146,18 +166,24 @@ const styles = StyleSheet.create({
   badgeText: {
     color: COLORS.volunteer.primary,
     fontWeight: "bold",
-    fontSize: 12
+    fontSize: 12,
+    lineHeight: 16,
+    includeFontPadding: false
   },
   taskType: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
     color: COLORS.volunteer.primary,
-    marginBottom: 4
+    marginBottom: 4,
+    includeFontPadding: false
   },
   dateTime: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.subtext,
-    marginBottom: 10
+    marginBottom: 10,
+    includeFontPadding: false
   },
   notesBox: {
     backgroundColor: COLORS.inputBg,
@@ -167,28 +193,43 @@ const styles = StyleSheet.create({
   },
   notesLabel: {
     fontSize: 12,
+    lineHeight: 16,
     fontWeight: "bold",
     color: COLORS.subtext,
-    marginBottom: 2
+    marginBottom: 2,
+    includeFontPadding: false
   },
   notesText: {
     fontSize: 14,
-    color: COLORS.text
+    lineHeight: 20,
+    color: COLORS.text,
+    includeFontPadding: false
   },
   emptyContainer: {
     alignItems: "center",
     marginTop: 50
   },
+  emptyEmoji: {
+    fontSize: 40,
+    lineHeight: 50,
+    textAlign: "center",
+    includeFontPadding: false
+  },
   emptyTitle: {
     fontSize: 20,
+    lineHeight: 26,
     fontWeight: "bold",
     color: COLORS.text,
-    marginTop: 10
+    marginTop: 10,
+    includeFontPadding: false
   },
   emptySub: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.subtext,
     marginTop: 4,
-    textAlign: "center"
+    textAlign: "center",
+    includeFontPadding: false
   }
 });
+

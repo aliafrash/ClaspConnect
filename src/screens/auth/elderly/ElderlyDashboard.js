@@ -9,18 +9,16 @@ import { mockSessionUser } from "../../../firebase/auth";
 
 export default function ElderlyDashboard({ navigation }) {
   const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    loadRequests();
+    let isMounted = true;
+    fetchRequests({ elderlyId: mockSessionUser.uid }).then((data) => {
+      if (isMounted) setRequests(data);
+    });
+    return () => {
+      isMounted = false;
+    };
   }, []);
-
-  const loadRequests = async () => {
-    setLoading(true);
-    const data = await fetchRequests({ elderlyId: mockSessionUser.uid });
-    setRequests(data);
-    setLoading(false);
-  };
 
   const activeRequest = requests.find(r => r.status === "Matched" || r.status === "In Progress" || r.status === "Pending");
 
@@ -34,10 +32,12 @@ export default function ElderlyDashboard({ navigation }) {
         onLogout={() => navigation.navigate("RoleSelection")}
       />
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Welcome Banner */}
         <View style={styles.welcomeCard}>
-          <Text style={styles.welcomeIcon}>👴</Text>
+          <View style={styles.welcomeIconBadge}>
+            <Text style={styles.welcomeIcon}>👴</Text>
+          </View>
           <View style={styles.welcomeTextContainer}>
             <Text style={styles.welcomeTitle}>Welcome Back, Mr. Perera</Text>
             <Text style={styles.welcomeDesc}>
@@ -48,12 +48,12 @@ export default function ElderlyDashboard({ navigation }) {
 
         {/* High-Contrast Main Action Button */}
         <TouchableOpacity
-          activeOpacity={0.85}
+          activeOpacity={0.75}
           style={styles.requestBigButton}
           onPress={() => navigation.navigate("RequestHelp")}
         >
           <View style={styles.requestIconBadge}>
-            <Text style={{ fontSize: 36 }}>💖</Text>
+            <Text style={styles.heartEmoji}>💖</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.requestBigTitle}>Request Help or Companionship</Text>
@@ -77,12 +77,15 @@ export default function ElderlyDashboard({ navigation }) {
 
             {activeRequest.volunteerName && (
               <View style={styles.matchedVolunteerBox}>
-                <Text style={styles.volunteerIcon}>🙋‍♀️</Text>
+                <View style={styles.volunteerIconBadge}>
+                  <Text style={styles.volunteerIcon}>🙋‍♀️</Text>
+                </View>
                 <View style={{ flex: 1, marginLeft: 10 }}>
                   <Text style={styles.volunteerLabel}>Assigned Volunteer</Text>
                   <Text style={styles.volunteerName}>{activeRequest.volunteerName} (Verified)</Text>
                 </View>
                 <TouchableOpacity
+                  activeOpacity={0.7}
                   style={styles.callButton}
                   onPress={() => Alert.alert("Calling Volunteer", `Initiating call to ${activeRequest.volunteerName}...`)}
                 >
@@ -112,6 +115,7 @@ export default function ElderlyDashboard({ navigation }) {
         {/* Secondary Quick Action Cards */}
         <View style={styles.gridRow}>
           <TouchableOpacity
+            activeOpacity={0.75}
             style={styles.gridCard}
             onPress={() => navigation.navigate("MyRequests")}
           >
@@ -121,6 +125,7 @@ export default function ElderlyDashboard({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity
+            activeOpacity={0.75}
             style={[styles.gridCard, { backgroundColor: "#FEF2F2", borderColor: "#FCA5A5" }]}
             onPress={() => Alert.alert("Emergency Alert", "Connecting to emergency contact & family caregiver Thilini...")}
           >
@@ -160,22 +165,37 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border
   },
+  welcomeIconBadge: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12
+  },
   welcomeIcon: {
-    fontSize: 40,
-    marginRight: 14
+    fontSize: 36,
+    lineHeight: 46,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   welcomeTextContainer: {
     flex: 1
   },
   welcomeTitle: {
     fontSize: 20,
+    lineHeight: 26,
     fontWeight: "bold",
-    color: COLORS.elderly.primary
+    color: COLORS.elderly.primary,
+    includeFontPadding: false
   },
   welcomeDesc: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.subtext,
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   },
   requestBigButton: {
     flexDirection: "row",
@@ -199,15 +219,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 14
   },
+  heartEmoji: {
+    fontSize: 32,
+    lineHeight: 40,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
+  },
   requestBigTitle: {
     fontSize: 20,
+    lineHeight: 26,
     fontWeight: "bold",
-    color: COLORS.white
+    color: COLORS.white,
+    includeFontPadding: false
   },
   requestBigSubtitle: {
     fontSize: 14,
+    lineHeight: 18,
     color: "#E0D5FA",
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   },
   activeCard: {
     backgroundColor: COLORS.white,
@@ -228,25 +259,33 @@ const styles = StyleSheet.create({
     color: COLORS.elderly.primary,
     fontWeight: "bold",
     paddingHorizontal: 12,
-    paddingVertical: 4,
+    paddingVertical: 5,
     borderRadius: 12,
-    fontSize: 14
+    fontSize: 14,
+    lineHeight: 18,
+    includeFontPadding: false
   },
   activeDate: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    fontWeight: "600"
+    fontWeight: "600",
+    includeFontPadding: false
   },
   activeType: {
     fontSize: 18,
+    lineHeight: 24,
     fontWeight: "bold",
     color: COLORS.text,
-    marginBottom: 6
+    marginBottom: 6,
+    includeFontPadding: false
   },
   activeNotes: {
     fontSize: 15,
+    lineHeight: 22,
     color: COLORS.subtext,
-    marginBottom: 12
+    marginBottom: 12,
+    includeFontPadding: false
   },
   matchedVolunteerBox: {
     flexDirection: "row",
@@ -256,18 +295,33 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginBottom: 8
   },
+  volunteerIconBadge: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: "center",
+    alignItems: "center"
+  },
   volunteerIcon: {
-    fontSize: 28
+    fontSize: 26,
+    lineHeight: 34,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   volunteerLabel: {
     fontSize: 12,
+    lineHeight: 16,
     color: COLORS.volunteer.primary,
-    fontWeight: "600"
+    fontWeight: "600",
+    includeFontPadding: false
   },
   volunteerName: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   callButton: {
     backgroundColor: COLORS.volunteer.primary,
@@ -284,19 +338,27 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border
   },
   emptyIcon: {
-    fontSize: 44,
-    marginBottom: 8
+    fontSize: 40,
+    lineHeight: 50,
+    textAlign: "center",
+    textAlignVertical: "center",
+    marginBottom: 8,
+    includeFontPadding: false
   },
   emptyTitle: {
     fontSize: 18,
+    lineHeight: 24,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   emptyDesc: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.subtext,
     textAlign: "center",
-    marginTop: 4
+    marginTop: 4,
+    includeFontPadding: false
   },
   gridRow: {
     flexDirection: "row",
@@ -313,19 +375,28 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   gridIcon: {
-    fontSize: 32,
-    marginBottom: 6
+    fontSize: 30,
+    lineHeight: 38,
+    textAlign: "center",
+    textAlignVertical: "center",
+    marginBottom: 6,
+    includeFontPadding: false
   },
   gridTitle: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
     color: COLORS.text,
-    textAlign: "center"
+    textAlign: "center",
+    includeFontPadding: false
   },
   gridSub: {
     fontSize: 12,
+    lineHeight: 16,
     color: COLORS.subtext,
     textAlign: "center",
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   }
 });
+

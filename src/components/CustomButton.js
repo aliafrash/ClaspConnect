@@ -38,9 +38,12 @@ export default function CustomButton({
     return COLORS.white;
   };
 
+  const fontSize = isElderly ? 20 : 16;
+  const lineHeight = isElderly ? 26 : 22;
+
   return (
     <TouchableOpacity
-      activeOpacity={0.8}
+      activeOpacity={0.7}
       onPress={onPress}
       disabled={disabled || loading}
       style={[
@@ -71,7 +74,8 @@ export default function CustomButton({
               styles.text,
               {
                 color: getTextColor(),
-                fontSize: isElderly ? 20 : 16,
+                fontSize,
+                lineHeight,
                 fontWeight: isElderly ? "bold" : "600"
               },
               textStyle
@@ -105,6 +109,8 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   text: {
-    textAlign: "center"
+    textAlign: "center",
+    includeFontPadding: false
   }
 });
+

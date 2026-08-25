@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../../constants/colors";
 import { setMockUserRole } from "../../firebase/auth";
 
@@ -49,51 +50,57 @@ export default function RoleSelectionScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>🤝 ClaspConnect</Text>
-        <Text style={styles.title}>Select Your Role</Text>
-        <Text style={styles.subtitle}>
-          Experience the platform through any of the four key persona portals
-        </Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={styles.logo}>🤝 ClaspConnect</Text>
+          <Text style={styles.title}>Select Your Role</Text>
+          <Text style={styles.subtitle}>
+            Experience the platform through any of the four key persona portals
+          </Text>
+        </View>
 
-      <View style={styles.cardsList}>
-        {roles.map((role) => (
-          <TouchableOpacity
-            key={role.id}
-            activeOpacity={0.85}
-            style={[styles.roleCard, { backgroundColor: role.bgColor, borderColor: role.color + "40" }]}
-            onPress={() => handleSelectRole(role.id)}
-          >
-            <Text style={styles.roleIcon}>{role.icon}</Text>
-            <View style={styles.roleTextContainer}>
-              <View style={styles.roleHeaderRow}>
-                <Text style={[styles.roleTitle, { color: role.color }]}>{role.title}</Text>
-                <Text style={styles.roleSubtitle}>{role.subtitle}</Text>
+        <View style={styles.cardsList}>
+          {roles.map((role) => (
+            <TouchableOpacity
+              key={role.id}
+              activeOpacity={0.75}
+              style={[styles.roleCard, { backgroundColor: role.bgColor, borderColor: role.color + "40" }]}
+              onPress={() => handleSelectRole(role.id)}
+            >
+              <View style={styles.roleIconContainer}>
+                <Text style={styles.roleIcon}>{role.icon}</Text>
               </View>
-              <Text style={styles.roleDesc}>{role.desc}</Text>
-            </View>
+              <View style={styles.roleTextContainer}>
+                <View style={styles.roleHeaderRow}>
+                  <Text style={[styles.roleTitle, { color: role.color }]}>{role.title}</Text>
+                  <Text style={styles.roleSubtitle}>{role.subtitle}</Text>
+                </View>
+                <Text style={styles.roleDesc}>{role.desc}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <View style={styles.authButtonsRow}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.authButtonPrimary}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={styles.authButtonPrimaryText}>Login to Account</Text>
           </TouchableOpacity>
-        ))}
-      </View>
 
-      <View style={styles.authButtonsRow}>
-        <TouchableOpacity
-          style={styles.authButtonPrimary}
-          onPress={() => navigation.navigate("Login")}
-        >
-          <Text style={styles.authButtonPrimaryText}>Login to Account</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.authButtonSecondary}
-          onPress={() => navigation.navigate("Register")}
-        >
-          <Text style={styles.authButtonSecondaryText}>Register New User</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.authButtonSecondary}
+            onPress={() => navigation.navigate("Register")}
+          >
+            <Text style={styles.authButtonSecondaryText}>Register New User</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -104,7 +111,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 50,
+    paddingTop: 20,
     paddingBottom: 40
   },
   header: {
@@ -113,20 +120,26 @@ const styles = StyleSheet.create({
   },
   logo: {
     fontSize: 20,
+    lineHeight: 26,
     fontWeight: "bold",
     color: COLORS.primary,
-    marginBottom: 6
+    marginBottom: 6,
+    includeFontPadding: false
   },
   title: {
     fontSize: 28,
+    lineHeight: 34,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   subtitle: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.subtext,
     textAlign: "center",
-    marginTop: 6
+    marginTop: 6,
+    includeFontPadding: false
   },
   cardsList: {
     marginBottom: 20
@@ -144,9 +157,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2
   },
-  roleIcon: {
-    fontSize: 38,
+  roleIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 14
+  },
+  roleIcon: {
+    fontSize: 34,
+    lineHeight: 44,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   roleTextContainer: {
     flex: 1
@@ -156,17 +180,22 @@ const styles = StyleSheet.create({
   },
   roleTitle: {
     fontSize: 18,
-    fontWeight: "bold"
+    lineHeight: 24,
+    fontWeight: "bold",
+    includeFontPadding: false
   },
   roleSubtitle: {
     fontSize: 12,
+    lineHeight: 16,
     color: COLORS.subtext,
-    fontWeight: "600"
+    fontWeight: "600",
+    includeFontPadding: false
   },
   roleDesc: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.text,
-    lineHeight: 18
+    includeFontPadding: false
   },
   authButtonsRow: {
     marginTop: 10
@@ -181,7 +210,9 @@ const styles = StyleSheet.create({
   authButtonPrimaryText: {
     color: COLORS.white,
     fontWeight: "bold",
-    fontSize: 16
+    fontSize: 16,
+    lineHeight: 22,
+    includeFontPadding: false
   },
   authButtonSecondary: {
     backgroundColor: COLORS.white,
@@ -194,6 +225,9 @@ const styles = StyleSheet.create({
   authButtonSecondaryText: {
     color: COLORS.primary,
     fontWeight: "bold",
-    fontSize: 16
+    fontSize: 16,
+    lineHeight: 22,
+    includeFontPadding: false
   }
 });
+

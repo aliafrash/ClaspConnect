@@ -39,9 +39,11 @@ export default function FeedbackScreen({ route, navigation }) {
         onBack={() => navigation.goBack()}
       />
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
-          <Text style={styles.avatar}>🙋‍♀️</Text>
+          <View style={styles.avatarBadge}>
+            <Text style={styles.avatar}>🙋‍♀️</Text>
+          </View>
           <Text style={styles.vName}>{volunteerName || "Nimali"}</Text>
           <Text style={styles.sub}>How was your experience during this visit?</Text>
 
@@ -50,10 +52,11 @@ export default function FeedbackScreen({ route, navigation }) {
             {[1, 2, 3, 4, 5].map((star) => (
               <TouchableOpacity
                 key={star}
+                activeOpacity={0.7}
                 onPress={() => setRating(star)}
                 style={styles.starBtn}
               >
-                <Text style={{ fontSize: 36 }}>{star <= rating ? "⭐" : "⚪"}</Text>
+                <Text style={styles.starEmoji}>{star <= rating ? "⭐" : "⚪"}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -99,39 +102,68 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: COLORS.border
   },
+  avatarBadge: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: COLORS.volunteer.bg,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10
+  },
   avatar: {
-    fontSize: 50,
-    marginBottom: 8
+    fontSize: 44,
+    lineHeight: 56,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   vName: {
     fontSize: 22,
+    lineHeight: 28,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   sub: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.subtext,
     marginTop: 4,
     marginBottom: 18,
-    textAlign: "center"
+    textAlign: "center",
+    includeFontPadding: false
   },
   ratingLabel: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
     color: COLORS.text,
-    marginBottom: 10
+    marginBottom: 10,
+    includeFontPadding: false
   },
   starsRow: {
     flexDirection: "row",
     marginBottom: 8
   },
   starBtn: {
-    paddingHorizontal: 4
+    paddingHorizontal: 6,
+    paddingVertical: 4
+  },
+  starEmoji: {
+    fontSize: 32,
+    lineHeight: 40,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   scoreText: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
     color: COLORS.volunteer.primary,
-    marginBottom: 20
+    marginBottom: 20,
+    includeFontPadding: false
   }
 });
+

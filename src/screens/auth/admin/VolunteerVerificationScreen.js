@@ -8,14 +8,15 @@ import { fetchVolunteersForAdmin, verifyVolunteerAccount } from "../../../fireba
 export default function VolunteerVerificationScreen({ navigation }) {
   const [volunteers, setVolunteers] = useState([]);
 
+  const loadData = () => {
+    fetchVolunteersForAdmin().then((data) => {
+      setVolunteers(data);
+    });
+  };
+
   useEffect(() => {
     loadData();
   }, []);
-
-  const loadData = async () => {
-    const data = await fetchVolunteersForAdmin();
-    setVolunteers(data);
-  };
 
   const handleAction = async (uid, name, approve) => {
     await verifyVolunteerAccount(uid, approve);
@@ -29,7 +30,9 @@ export default function VolunteerVerificationScreen({ navigation }) {
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <View style={styles.headerRow}>
-        <Text style={styles.vIcon}>🙋‍♂️</Text>
+        <View style={styles.vIconBadge}>
+          <Text style={styles.vIcon}>🙋‍♂️</Text>
+        </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.vName}>{item.displayName}</Text>
           <Text style={styles.vMeta}>Age {item.age || 24} • {item.occupation || "IT Professional"}</Text>
@@ -55,6 +58,7 @@ export default function VolunteerVerificationScreen({ navigation }) {
       <View style={styles.docBox}>
         <Text style={styles.docLabel}>Submitted Verification Document:</Text>
         <TouchableOpacity
+          activeOpacity={0.7}
           style={styles.docBtn}
           onPress={() => Alert.alert("Viewing Document", `Opening Document: ${item.idDocument || "NIC_Identity_2026.pdf"}`)}
         >
@@ -62,7 +66,7 @@ export default function VolunteerVerificationScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.bioText}>"{item.bio || "Eager to help elderly community members."}"</Text>
+      <Text style={styles.bioText}>&quot;{item.bio || "Eager to help elderly community members."}&quot;</Text>
 
       {!item.verified ? (
         <View style={styles.actionRow}>
@@ -101,9 +105,10 @@ export default function VolunteerVerificationScreen({ navigation }) {
         keyExtractor={(item) => item.uid}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={{ fontSize: 36 }}>📜</Text>
+            <Text style={styles.emptyEmoji}>📜</Text>
             <Text style={styles.emptyTitle}>No Volunteers Awaiting Review</Text>
           </View>
         }
@@ -134,24 +139,42 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10
   },
-  vIcon: {
-    fontSize: 36,
+  vIconBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: COLORS.admin.badgeBg,
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 12
+  },
+  vIcon: {
+    fontSize: 28,
+    lineHeight: 36,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   vName: {
     fontSize: 18,
+    lineHeight: 24,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   vMeta: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   },
   vLocation: {
     fontSize: 12,
+    lineHeight: 16,
     color: COLORS.admin.primary,
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   },
   statusBadge: {
     paddingHorizontal: 8,
@@ -166,7 +189,9 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 10,
-    fontWeight: "bold"
+    lineHeight: 14,
+    fontWeight: "bold",
+    includeFontPadding: false
   },
   textPending: {
     color: COLORS.admin.primary
@@ -182,23 +207,29 @@ const styles = StyleSheet.create({
   },
   docLabel: {
     fontSize: 12,
+    lineHeight: 16,
     fontWeight: "bold",
     color: COLORS.subtext,
-    marginBottom: 4
+    marginBottom: 4,
+    includeFontPadding: false
   },
   docBtn: {
     paddingVertical: 4
   },
   docBtnText: {
     fontSize: 13,
+    lineHeight: 18,
     fontWeight: "bold",
-    color: COLORS.caregiver.primary
+    color: COLORS.caregiver.primary,
+    includeFontPadding: false
   },
   bioText: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.text,
     fontStyle: "italic",
-    marginBottom: 12
+    marginBottom: 12,
+    includeFontPadding: false
   },
   actionRow: {
     flexDirection: "row",
@@ -213,15 +244,26 @@ const styles = StyleSheet.create({
   verifiedText: {
     color: COLORS.volunteer.primary,
     fontWeight: "bold",
-    fontSize: 13
+    fontSize: 13,
+    lineHeight: 18,
+    includeFontPadding: false
   },
   emptyContainer: {
     alignItems: "center",
     marginTop: 50
   },
+  emptyEmoji: {
+    fontSize: 36,
+    lineHeight: 46,
+    textAlign: "center",
+    includeFontPadding: false
+  },
   emptyTitle: {
     fontSize: 16,
+    lineHeight: 22,
     color: COLORS.subtext,
-    marginTop: 8
+    marginTop: 8,
+    includeFontPadding: false
   }
 });
+

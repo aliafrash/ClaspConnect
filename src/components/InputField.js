@@ -17,10 +17,21 @@ export default function InputField({
   numberOfLines = 1,
   style
 }) {
+  const fontSize = isElderly ? 18 : 15;
+  const lineHeight = isElderly ? 24 : 20;
+
   return (
     <View style={styles.container}>
       {label && (
-        <Text style={[styles.label, { fontSize: isElderly ? 18 : 14 }]}>
+        <Text
+          style={[
+            styles.label,
+            {
+              fontSize: isElderly ? 18 : 14,
+              lineHeight: isElderly ? 24 : 18
+            }
+          ]}
+        >
           {label}
         </Text>
       )}
@@ -54,7 +65,8 @@ export default function InputField({
           style={[
             styles.input,
             {
-              fontSize: isElderly ? 18 : 15,
+              fontSize,
+              lineHeight: multiline ? (isElderly ? 26 : 22) : lineHeight,
               textAlignVertical: multiline ? "top" : "center"
             }
           ]}
@@ -73,7 +85,8 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: "600",
     color: COLORS.text,
-    marginBottom: 6
+    marginBottom: 6,
+    includeFontPadding: false
   },
   inputContainer: {
     flexDirection: "row",
@@ -94,12 +107,16 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     color: COLORS.text,
-    paddingVertical: 10
+    paddingVertical: 10,
+    includeFontPadding: false
   },
   errorText: {
     color: COLORS.danger,
     fontSize: 13,
+    lineHeight: 18,
     marginTop: 4,
-    marginLeft: 4
+    marginLeft: 4,
+    includeFontPadding: false
   }
 });
+

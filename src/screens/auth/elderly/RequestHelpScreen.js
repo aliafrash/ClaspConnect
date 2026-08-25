@@ -64,20 +64,22 @@ export default function RequestHelpScreen({ navigation }) {
         onBack={() => navigation.goBack()}
       />
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.sectionTitle}>1. What type of help do you need?</Text>
         
         {activities.map((act) => (
           <TouchableOpacity
             key={act.title}
-            activeOpacity={0.8}
+            activeOpacity={0.75}
             style={[
               styles.activityCard,
               selectedActivity === act.title && styles.activityCardSelected
             ]}
             onPress={() => setSelectedActivity(act.title)}
           >
-            <Text style={styles.actIcon}>{act.icon}</Text>
+            <View style={styles.actIconBadge}>
+              <Text style={styles.actIcon}>{act.icon}</Text>
+            </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.actTitle}>{act.title}</Text>
               <Text style={styles.actDesc}>{act.desc}</Text>
@@ -149,10 +151,12 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
+    lineHeight: 26,
     fontWeight: "bold",
     color: COLORS.elderly.primary,
     marginTop: 10,
-    marginBottom: 14
+    marginBottom: 14,
+    includeFontPadding: false
   },
   activityCard: {
     flexDirection: "row",
@@ -168,22 +172,41 @@ const styles = StyleSheet.create({
     borderColor: COLORS.elderly.primary,
     backgroundColor: COLORS.elderly.badgeBg
   },
+  actIconBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12
+  },
   actIcon: {
-    fontSize: 32,
-    marginRight: 14
+    fontSize: 30,
+    lineHeight: 38,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   actTitle: {
     fontSize: 18,
+    lineHeight: 24,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   actDesc: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   },
   radio: {
     fontSize: 20,
-    marginLeft: 8
+    lineHeight: 26,
+    marginLeft: 8,
+    textAlign: "center",
+    includeFontPadding: false
   }
 });
+

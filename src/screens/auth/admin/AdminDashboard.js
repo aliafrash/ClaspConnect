@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import Header from "../../../components/Header";
 import CustomButton from "../../../components/CustomButton";
 import { COLORS } from "../../../constants/colors";
@@ -10,28 +9,32 @@ export default function AdminDashboard({ navigation }) {
   const [pendingVerifications, setPendingVerifications] = useState(1);
   const [pendingReports, setPendingReports] = useState(1);
 
+  const loadStats = () => {
+    fetchVolunteersForAdmin().then((vols) => {
+      setPendingVerifications(vols.filter(v => !v.verified).length);
+    });
+
+    fetchReportsForAdmin().then((reps) => {
+      setPendingReports(reps.filter(r => r.status === "Pending Review").length);
+    });
+  };
+
   useEffect(() => {
     loadStats();
   }, []);
 
-  const loadStats = async () => {
-    const vols = await fetchVolunteersForAdmin();
-    setPendingVerifications(vols.filter(v => !v.verified).length);
-
-    const reps = await fetchReportsForAdmin();
-    setPendingReports(reps.filter(r => r.status === "Pending Review").length);
-  };
-
   const handleBroadcast = () => {
-    Alert.prompt
-      ? Alert.prompt("System Broadcast", "Enter announcement message to all active app users:", [
-          { text: "Cancel", style: "cancel" },
-          {
-            text: "Send Announcement",
-            onPress: (text) => Alert.alert("Broadcast Sent! 📢", `Notification pushed: "${text || "Platform Maintenance Scheduled"}"`)
-          }
-        ])
-      : Alert.alert("System Broadcast", "Broadcasting safety guidelines update to all users! 📢");
+    if (Alert.prompt) {
+      Alert.prompt("System Broadcast", "Enter announcement message to all active app users:", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Send Announcement",
+          onPress: (text) => Alert.alert("Broadcast Sent! 📢", `Notification pushed: "${text || "Platform Maintenance Scheduled"}"`)
+        }
+      ]);
+    } else {
+      Alert.alert("System Broadcast", "Broadcasting safety guidelines update to all users! 📢");
+    }
   };
 
   return (
@@ -43,7 +46,7 @@ export default function AdminDashboard({ navigation }) {
         onLogout={() => navigation.navigate("RoleSelection")}
       />
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Metric Overview Grid */}
         <View style={styles.gridContainer}>
           <View style={styles.metricCard}>
@@ -72,11 +75,12 @@ export default function AdminDashboard({ navigation }) {
           <Text style={styles.sectionTitle}>Platform Administration Controls</Text>
 
           <TouchableOpacity
+            activeOpacity={0.75}
             style={styles.actionRow}
             onPress={() => navigation.navigate("VolunteerVerification")}
           >
             <View style={styles.actionIconBadge}>
-              <Text style={{ fontSize: 26 }}>📜</Text>
+              <Text style={styles.actionIconEmoji}>📜</Text>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.actionTitle}>Verify Volunteer IDs</Text>
@@ -90,11 +94,12 @@ export default function AdminDashboard({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity
+            activeOpacity={0.75}
             style={styles.actionRow}
             onPress={() => navigation.navigate("ReportsManagement")}
           >
             <View style={[styles.actionIconBadge, { backgroundColor: "#FEE2E2" }]}>
-              <Text style={{ fontSize: 26 }}>⚠️</Text>
+              <Text style={styles.actionIconEmoji}>⚠️</Text>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.actionTitle}>Reports & Complaints Moderation</Text>
@@ -108,11 +113,12 @@ export default function AdminDashboard({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity
+            activeOpacity={0.75}
             style={styles.actionRow}
             onPress={handleBroadcast}
           >
             <View style={[styles.actionIconBadge, { backgroundColor: COLORS.caregiver.badgeBg }]}>
-              <Text style={{ fontSize: 26 }}>📢</Text>
+              <Text style={styles.actionIconEmoji}>📢</Text>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.actionTitle}>Broadcast System Announcement</Text>
@@ -174,23 +180,29 @@ const styles = StyleSheet.create({
   },
   metricVal: {
     fontSize: 26,
+    lineHeight: 34,
     fontWeight: "bold",
-    color: COLORS.admin.primary
+    color: COLORS.admin.primary,
+    includeFontPadding: false
   },
   metricLabel: {
     fontSize: 12,
+    lineHeight: 16,
     color: COLORS.subtext,
     marginTop: 2,
-    fontWeight: "600"
+    fontWeight: "600",
+    includeFontPadding: false
   },
   section: {
     marginBottom: 16
   },
   sectionTitle: {
     fontSize: 18,
+    lineHeight: 24,
     fontWeight: "bold",
     color: COLORS.text,
-    marginBottom: 12
+    marginBottom: 12,
+    includeFontPadding: false
   },
   actionRow: {
     flexDirection: "row",
@@ -212,15 +224,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 12
   },
+  actionIconEmoji: {
+    fontSize: 24,
+    lineHeight: 32,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
+  },
   actionTitle: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   actionSub: {
     fontSize: 12,
+    lineHeight: 16,
     color: COLORS.subtext,
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   },
   badgeAlert: {
     backgroundColor: COLORS.admin.primary,
@@ -232,7 +255,9 @@ const styles = StyleSheet.create({
   badgeAlertText: {
     color: COLORS.white,
     fontSize: 11,
-    fontWeight: "bold"
+    lineHeight: 14,
+    fontWeight: "bold",
+    includeFontPadding: false
   },
   card: {
     backgroundColor: COLORS.white,
@@ -243,13 +268,18 @@ const styles = StyleSheet.create({
   },
   cardHeaderTitle: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
     color: COLORS.text,
-    marginBottom: 10
+    marginBottom: 10,
+    includeFontPadding: false
   },
   summaryItem: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    marginBottom: 6
+    marginBottom: 6,
+    includeFontPadding: false
   }
 });
+

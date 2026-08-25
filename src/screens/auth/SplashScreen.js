@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../../constants/colors";
 
 export default function SplashScreen({ navigation }) {
@@ -11,7 +12,7 @@ export default function SplashScreen({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.logoBadge}>
           <Text style={styles.logoIcon}>🤝</Text>
@@ -24,12 +25,13 @@ export default function SplashScreen({ navigation }) {
       </View>
 
       <TouchableOpacity
+        activeOpacity={0.7}
         style={styles.skipButton}
         onPress={() => navigation.replace("RoleSelection")}
       >
         <Text style={styles.skipText}>Get Started →</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -39,12 +41,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 60,
+    paddingVertical: 40,
     paddingHorizontal: 30
   },
   content: {
     alignItems: "center",
-    marginTop: 100
+    marginTop: 60
   },
   logoBadge: {
     width: 110,
@@ -53,44 +55,57 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20
+    marginBottom: 24
   },
   logoIcon: {
-    fontSize: 56
+    fontSize: 54,
+    lineHeight: 68,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   title: {
     fontSize: 38,
+    lineHeight: 46,
     fontWeight: "bold",
     color: COLORS.white,
-    letterSpacing: 1
+    letterSpacing: 1,
+    includeFontPadding: false
   },
   subtitle: {
     fontSize: 18,
+    lineHeight: 24,
     color: COLORS.accent,
     fontWeight: "600",
-    marginTop: 8
+    marginTop: 8,
+    textAlign: "center",
+    includeFontPadding: false
   },
   description: {
     fontSize: 14,
+    lineHeight: 22,
     color: "#E0D5FA",
     textAlign: "center",
     marginTop: 12,
-    lineHeight: 20
+    includeFontPadding: false
   },
   skipButton: {
     backgroundColor: COLORS.white,
-    paddingHorizontal: 28,
+    paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 30,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
-    elevation: 4
+    elevation: 4,
+    marginBottom: 20
   },
   skipText: {
     color: COLORS.primary,
     fontWeight: "bold",
-    fontSize: 16
+    fontSize: 16,
+    lineHeight: 22,
+    includeFontPadding: false
   }
 });

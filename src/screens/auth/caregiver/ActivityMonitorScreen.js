@@ -2,21 +2,21 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from "react-native";
 import Header from "../../../components/Header";
 import UserCard from "../../../components/UserCard";
-import CustomButton from "../../../components/CustomButton";
 import { COLORS } from "../../../constants/colors";
 import { fetchRequests } from "../../../firebase/firestore";
 
 export default function ActivityMonitorScreen({ navigation }) {
   const [requests, setRequests] = useState([]);
 
+  const loadData = () => {
+    fetchRequests({ elderlyId: "demo-user-elderly" }).then((data) => {
+      setRequests(data);
+    });
+  };
+
   useEffect(() => {
     loadData();
   }, []);
-
-  const loadData = async () => {
-    const data = await fetchRequests({ elderlyId: "demo-user-elderly" });
-    setRequests(data);
-  };
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
@@ -55,6 +55,7 @@ export default function ActivityMonitorScreen({ navigation }) {
 
           <View style={styles.btnRow}>
             <TouchableOpacity
+              activeOpacity={0.7}
               style={styles.callBtn}
               onPress={() => Alert.alert("Contact Volunteer", `Calling ${item.volunteerName}...`)}
             >
@@ -62,6 +63,7 @@ export default function ActivityMonitorScreen({ navigation }) {
             </TouchableOpacity>
 
             <TouchableOpacity
+              activeOpacity={0.7}
               style={[styles.callBtn, { backgroundColor: COLORS.danger }]}
               onPress={() => Alert.alert("Report Issue", "Opening safety report portal for this visit.")}
             >
@@ -78,7 +80,7 @@ export default function ActivityMonitorScreen({ navigation }) {
       {item.rating && (
         <View style={styles.reviewBox}>
           <Text style={styles.reviewText}>
-            Elderly Feedback: ⭐ {item.rating}/5 Stars - "{item.feedback}"
+            Elderly Feedback: ⭐ {item.rating}/5 Stars - &quot;{item.feedback}&quot;
           </Text>
         </View>
       )}
@@ -99,9 +101,10 @@ export default function ActivityMonitorScreen({ navigation }) {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={{ fontSize: 36 }}>📊</Text>
+            <Text style={styles.emptyEmoji}>📊</Text>
             <Text style={styles.emptyTitle}>No Recorded Activities</Text>
           </View>
         }
@@ -135,16 +138,21 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 17,
+    lineHeight: 22,
     fontWeight: "bold",
     color: COLORS.text,
-    flex: 1
+    flex: 1,
+    marginRight: 6,
+    includeFontPadding: false
   },
   badge: {
     fontSize: 12,
+    lineHeight: 16,
     fontWeight: "bold",
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 10
+    borderRadius: 10,
+    includeFontPadding: false
   },
   badgeMatched: {
     backgroundColor: COLORS.caregiver.badgeBg,
@@ -160,22 +168,28 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    marginBottom: 4
+    marginBottom: 4,
+    includeFontPadding: false
   },
   notes: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.text,
-    marginBottom: 10
+    marginBottom: 10,
+    includeFontPadding: false
   },
   volunteerBox: {
     marginTop: 6
   },
   vTitle: {
     fontSize: 13,
+    lineHeight: 18,
     fontWeight: "bold",
     color: COLORS.caregiver.primary,
-    marginBottom: 2
+    marginBottom: 2,
+    includeFontPadding: false
   },
   btnRow: {
     flexDirection: "row",
@@ -185,14 +199,16 @@ const styles = StyleSheet.create({
   callBtn: {
     width: "48%",
     backgroundColor: COLORS.caregiver.primary,
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderRadius: 10,
     alignItems: "center"
   },
   btnText: {
     color: COLORS.white,
     fontWeight: "bold",
-    fontSize: 12
+    fontSize: 12,
+    lineHeight: 16,
+    includeFontPadding: false
   },
   unmatchedBox: {
     backgroundColor: COLORS.inputBg,
@@ -202,8 +218,10 @@ const styles = StyleSheet.create({
   },
   unmatchedText: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    fontStyle: "italic"
+    fontStyle: "italic",
+    includeFontPadding: false
   },
   reviewBox: {
     backgroundColor: COLORS.volunteer.bg,
@@ -213,16 +231,27 @@ const styles = StyleSheet.create({
   },
   reviewText: {
     fontSize: 13,
+    lineHeight: 18,
     fontWeight: "bold",
-    color: COLORS.volunteer.primary
+    color: COLORS.volunteer.primary,
+    includeFontPadding: false
   },
   emptyContainer: {
     alignItems: "center",
     marginTop: 50
   },
+  emptyEmoji: {
+    fontSize: 36,
+    lineHeight: 46,
+    textAlign: "center",
+    includeFontPadding: false
+  },
   emptyTitle: {
     fontSize: 16,
+    lineHeight: 22,
     color: COLORS.subtext,
-    marginTop: 8
+    marginTop: 8,
+    includeFontPadding: false
   }
 });
+

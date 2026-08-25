@@ -10,14 +10,15 @@ export default function MyRequestsScreen({ navigation }) {
   const [requests, setRequests] = useState([]);
   const [filter, setFilter] = useState("All");
 
+  const loadData = () => {
+    fetchRequests({ elderlyId: mockSessionUser.uid }).then((data) => {
+      setRequests(data);
+    });
+  };
+
   useEffect(() => {
     loadData();
   }, []);
-
-  const loadData = async () => {
-    const data = await fetchRequests({ elderlyId: mockSessionUser.uid });
-    setRequests(data);
-  };
 
   const getFilteredRequests = () => {
     if (filter === "Active") {
@@ -61,6 +62,7 @@ export default function MyRequestsScreen({ navigation }) {
             <Text style={styles.vName}>{item.volunteerName}</Text>
           </View>
           <TouchableOpacity
+            activeOpacity={0.7}
             style={styles.actionBtn}
             onPress={() => Alert.alert("Call Volunteer", `Calling ${item.volunteerName}...`)}
           >
@@ -72,7 +74,7 @@ export default function MyRequestsScreen({ navigation }) {
       {item.status === "Completed" && (
         <View style={styles.completedBox}>
           {item.rating ? (
-            <Text style={styles.ratingText}>Your Rating: ⭐ {item.rating}/5 - "{item.feedback}"</Text>
+            <Text style={styles.ratingText}>Your Rating: ⭐ {item.rating}/5 - &quot;{item.feedback}&quot;</Text>
           ) : (
             <CustomButton
               title="⭐ Give Rating & Feedback"
@@ -100,6 +102,7 @@ export default function MyRequestsScreen({ navigation }) {
         {["All", "Active", "Completed"].map((tab) => (
           <TouchableOpacity
             key={tab}
+            activeOpacity={0.7}
             style={[styles.filterChip, filter === tab && styles.filterChipActive]}
             onPress={() => setFilter(tab)}
           >
@@ -115,9 +118,10 @@ export default function MyRequestsScreen({ navigation }) {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={{ fontSize: 36 }}>📋</Text>
+            <Text style={styles.emptyEmoji}>📋</Text>
             <Text style={styles.emptyText}>No requests found for this filter.</Text>
           </View>
         }
@@ -149,8 +153,10 @@ const styles = StyleSheet.create({
   },
   filterText: {
     fontSize: 16,
+    lineHeight: 20,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   filterTextActive: {
     color: COLORS.white
@@ -175,16 +181,21 @@ const styles = StyleSheet.create({
   },
   activityName: {
     fontSize: 18,
+    lineHeight: 24,
     fontWeight: "bold",
     color: COLORS.text,
-    flex: 1
+    flex: 1,
+    marginRight: 6,
+    includeFontPadding: false
   },
   statusTag: {
     fontWeight: "bold",
     fontSize: 13,
+    lineHeight: 16,
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 10
+    borderRadius: 10,
+    includeFontPadding: false
   },
   tagPending: {
     backgroundColor: COLORS.admin.badgeBg,
@@ -200,13 +211,17 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.subtext,
-    marginBottom: 6
+    marginBottom: 6,
+    includeFontPadding: false
   },
   notesText: {
     fontSize: 14,
+    lineHeight: 20,
     color: COLORS.text,
-    marginBottom: 12
+    marginBottom: 12,
+    includeFontPadding: false
   },
   volunteerRow: {
     flexDirection: "row",
@@ -218,16 +233,23 @@ const styles = StyleSheet.create({
   },
   vIcon: {
     fontSize: 24,
-    marginRight: 8
+    lineHeight: 32,
+    marginRight: 8,
+    textAlign: "center",
+    includeFontPadding: false
   },
   vLabel: {
     fontSize: 11,
-    color: COLORS.subtext
+    lineHeight: 14,
+    color: COLORS.subtext,
+    includeFontPadding: false
   },
   vName: {
     fontSize: 15,
+    lineHeight: 20,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   actionBtn: {
     backgroundColor: COLORS.volunteer.primary,
@@ -238,26 +260,39 @@ const styles = StyleSheet.create({
   actionBtnText: {
     color: COLORS.white,
     fontWeight: "bold",
-    fontSize: 13
+    fontSize: 13,
+    lineHeight: 18,
+    includeFontPadding: false
   },
   completedBox: {
     marginTop: 10
   },
   ratingText: {
     fontSize: 14,
+    lineHeight: 20,
     fontWeight: "bold",
     color: COLORS.volunteer.primary,
     backgroundColor: COLORS.volunteer.bg,
     padding: 10,
-    borderRadius: 10
+    borderRadius: 10,
+    includeFontPadding: false
   },
   emptyContainer: {
     alignItems: "center",
     marginTop: 40
   },
+  emptyEmoji: {
+    fontSize: 36,
+    lineHeight: 46,
+    textAlign: "center",
+    includeFontPadding: false
+  },
   emptyText: {
     fontSize: 16,
+    lineHeight: 22,
     color: COLORS.subtext,
-    marginTop: 8
+    marginTop: 8,
+    includeFontPadding: false
   }
 });
+

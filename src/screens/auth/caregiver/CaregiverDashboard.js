@@ -6,7 +6,7 @@ import { COLORS } from "../../../constants/colors";
 import { fetchRequests } from "../../../firebase/firestore";
 
 export default function CaregiverDashboard({ navigation }) {
-  const [elderlyProfile, setElderlyProfile] = useState({
+  const [elderlyProfile] = useState({
     name: "Mr. Perera (Father)",
     age: 72,
     location: "Colombo 03, Sri Lanka",
@@ -15,14 +15,15 @@ export default function CaregiverDashboard({ navigation }) {
 
   const [recentVisits, setRecentVisits] = useState([]);
 
+  const loadData = () => {
+    fetchRequests({ elderlyId: "demo-user-elderly" }).then((data) => {
+      setRecentVisits(data);
+    });
+  };
+
   useEffect(() => {
     loadData();
   }, []);
-
-  const loadData = async () => {
-    const data = await fetchRequests({ elderlyId: "demo-user-elderly" });
-    setRecentVisits(data);
-  };
 
   return (
     <View style={styles.container}>
@@ -33,23 +34,26 @@ export default function CaregiverDashboard({ navigation }) {
         onLogout={() => navigation.navigate("RoleSelection")}
       />
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Linked Elder Family Member Summary Card */}
         <View style={styles.linkedElderCard}>
           <View style={styles.linkedHeader}>
-            <Text style={styles.avatar}>👴</Text>
+            <View style={styles.avatarBadge}>
+              <Text style={styles.avatar}>👴</Text>
+            </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.elderName}>{elderlyProfile.name}</Text>
               <Text style={styles.elderSub}>📍 {elderlyProfile.location}</Text>
               <Text style={styles.codeTag}>Link Code: {elderlyProfile.linkCode}</Text>
             </View>
             <View style={styles.activeDot}>
-              <Text style={{ fontSize: 10, color: COLORS.success, fontWeight: "bold" }}>● ACTIVE</Text>
+              <Text style={styles.activeDotText}>● ACTIVE</Text>
             </View>
           </View>
 
           <View style={styles.elderBtnRow}>
             <TouchableOpacity
+              activeOpacity={0.7}
               style={styles.elderBtn}
               onPress={() => navigation.navigate("RequestHelp")}
             >
@@ -57,6 +61,7 @@ export default function CaregiverDashboard({ navigation }) {
             </TouchableOpacity>
 
             <TouchableOpacity
+              activeOpacity={0.7}
               style={[styles.elderBtn, { backgroundColor: COLORS.caregiver.badgeBg }]}
               onPress={() => navigation.navigate("ActivityMonitor")}
             >
@@ -77,7 +82,7 @@ export default function CaregiverDashboard({ navigation }) {
         <View style={styles.timelineContainer}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Real-time Activity Timeline</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("ActivityMonitor")}>
+            <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate("ActivityMonitor")}>
               <Text style={styles.seeAll}>See Full Feed →</Text>
             </TouchableOpacity>
           </View>
@@ -163,31 +168,56 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12
   },
-  avatar: {
-    fontSize: 40,
+  avatarBadge: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: COLORS.elderly.badgeBg,
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 12
+  },
+  avatar: {
+    fontSize: 32,
+    lineHeight: 40,
+    textAlign: "center",
+    textAlignVertical: "center",
+    includeFontPadding: false
   },
   elderName: {
     fontSize: 18,
+    lineHeight: 24,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   elderSub: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   },
   codeTag: {
     fontSize: 12,
+    lineHeight: 16,
     color: COLORS.caregiver.primary,
     fontWeight: "bold",
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   },
   activeDot: {
     backgroundColor: "#DCFCE7",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 10
+  },
+  activeDotText: {
+    fontSize: 10,
+    lineHeight: 14,
+    color: COLORS.success,
+    fontWeight: "bold",
+    includeFontPadding: false
   },
   elderBtnRow: {
     flexDirection: "row",
@@ -204,7 +234,9 @@ const styles = StyleSheet.create({
   elderBtnText: {
     color: COLORS.white,
     fontWeight: "bold",
-    fontSize: 13
+    fontSize: 13,
+    lineHeight: 18,
+    includeFontPadding: false
   },
   timelineContainer: {
     marginBottom: 16
@@ -217,13 +249,17 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
+    lineHeight: 24,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    includeFontPadding: false
   },
   seeAll: {
     color: COLORS.caregiver.primary,
     fontWeight: "bold",
-    fontSize: 13
+    fontSize: 13,
+    lineHeight: 18,
+    includeFontPadding: false
   },
   timelineItem: {
     flexDirection: "row",
@@ -253,15 +289,21 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontSize: 15,
+    lineHeight: 20,
     fontWeight: "bold",
-    color: COLORS.text
+    color: COLORS.text,
+    flex: 1,
+    marginRight: 6,
+    includeFontPadding: false
   },
   itemStatus: {
     fontSize: 11,
+    lineHeight: 14,
     fontWeight: "bold",
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 8
+    borderRadius: 8,
+    includeFontPadding: false
   },
   statusMatched: {
     backgroundColor: COLORS.caregiver.badgeBg,
@@ -273,13 +315,17 @@ const styles = StyleSheet.create({
   },
   itemMeta: {
     fontSize: 12,
+    lineHeight: 16,
     color: COLORS.subtext,
-    marginBottom: 4
+    marginBottom: 4,
+    includeFontPadding: false
   },
   itemVolunteer: {
     fontSize: 12,
+    lineHeight: 16,
     color: COLORS.text,
-    marginTop: 2
+    marginTop: 2,
+    includeFontPadding: false
   },
   safetyCard: {
     backgroundColor: COLORS.white,
@@ -291,13 +337,17 @@ const styles = StyleSheet.create({
   },
   safetyTitle: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
     color: COLORS.danger,
-    marginBottom: 4
+    marginBottom: 4,
+    includeFontPadding: false
   },
   safetySub: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    lineHeight: 18
+    includeFontPadding: false
   }
 });
+

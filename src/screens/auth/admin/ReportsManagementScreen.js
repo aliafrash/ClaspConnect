@@ -8,14 +8,15 @@ import { fetchReportsForAdmin, resolveReport } from "../../../firebase/firestore
 export default function ReportsManagementScreen({ navigation }) {
   const [reports, setReports] = useState([]);
 
+  const loadData = () => {
+    fetchReportsForAdmin().then((data) => {
+      setReports(data);
+    });
+  };
+
   useEffect(() => {
     loadData();
   }, []);
-
-  const loadData = async () => {
-    const data = await fetchReportsForAdmin();
-    setReports(data);
-  };
 
   const handleResolve = async (id, action) => {
     await resolveReport(id, action);
@@ -38,7 +39,7 @@ export default function ReportsManagementScreen({ navigation }) {
       </View>
 
       <Text style={styles.subject}>Subject: {item.subjectType}</Text>
-      <Text style={styles.desc}>"{item.description}"</Text>
+      <Text style={styles.desc}>&quot;{item.description}&quot;</Text>
 
       {item.status === "Pending Review" ? (
         <View style={styles.btnRow}>
@@ -79,9 +80,10 @@ export default function ReportsManagementScreen({ navigation }) {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={{ fontSize: 36 }}>🛡️</Text>
+            <Text style={styles.emptyEmoji}>🛡️</Text>
             <Text style={styles.emptyTitle}>No Pending Safety Reports</Text>
           </View>
         }
@@ -115,15 +117,19 @@ const styles = StyleSheet.create({
   },
   reporter: {
     fontSize: 14,
+    lineHeight: 18,
     fontWeight: "bold",
-    color: COLORS.danger
+    color: COLORS.danger,
+    includeFontPadding: false
   },
   badge: {
     fontSize: 11,
+    lineHeight: 14,
     fontWeight: "bold",
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 8
+    borderRadius: 8,
+    includeFontPadding: false
   },
   badgeDanger: {
     backgroundColor: "#FEE2E2",
@@ -135,14 +141,18 @@ const styles = StyleSheet.create({
   },
   subject: {
     fontSize: 16,
+    lineHeight: 22,
     fontWeight: "bold",
     color: COLORS.text,
-    marginBottom: 4
+    marginBottom: 4,
+    includeFontPadding: false
   },
   desc: {
     fontSize: 13,
+    lineHeight: 18,
     color: COLORS.subtext,
-    marginBottom: 12
+    marginBottom: 12,
+    includeFontPadding: false
   },
   btnRow: {
     flexDirection: "row",
@@ -157,15 +167,26 @@ const styles = StyleSheet.create({
   resolvedText: {
     color: COLORS.admin.primary,
     fontWeight: "bold",
-    fontSize: 12
+    fontSize: 12,
+    lineHeight: 16,
+    includeFontPadding: false
   },
   emptyContainer: {
     alignItems: "center",
     marginTop: 50
   },
+  emptyEmoji: {
+    fontSize: 36,
+    lineHeight: 46,
+    textAlign: "center",
+    includeFontPadding: false
+  },
   emptyTitle: {
     fontSize: 16,
+    lineHeight: 22,
     color: COLORS.subtext,
-    marginTop: 8
+    marginTop: 8,
+    includeFontPadding: false
   }
 });
+
